@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "CLGNN: toy CPU loss",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/toy_loss.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    },
+    {
+      "name": "CLGNN: toy CPU forward",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/smoke_toy.py",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1"
+      }
+    }
+  ]
+}
