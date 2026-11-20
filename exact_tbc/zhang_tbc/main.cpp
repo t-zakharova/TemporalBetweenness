@@ -1,14 +1,17 @@
+// Local adaptation: graph path from argv; shortest computation enabled.
 #include <iostream>
 #include <chrono>
+#include <string>
 #include "Transformer.h"
 #include "Computer.h"
 using namespace std;
 using namespace chrono;
 struct Settings
 {
+	string filename;
 	bool isStrict = true;
 	bool needCompress = false;
-	bool runshortest = false;
+	bool runshortest = true;
 	bool runshortestforemost = false;
 
 };
@@ -16,10 +19,16 @@ auto time_cost = [](const auto st, const auto en) {
 	return ((double)duration_cast<microseconds>(en - st).count()) * microseconds::period::num / microseconds::period::den;
 };
 
-int main()
+int main(int argc, char* argv[])
 {
+	if (argc != 2)
+	{
+		cerr << "Usage: " << argv[0] << " GRAPH_FILE\n";
+		return 2;
+	}
 	Settings setting;
-	vector<string> filenames;
+	setting.filename = argv[1];
+	vector<string> filenames{setting.filename};
 	//filenames.push_back("../data-set/highschool2011.txt");
 	/*filenames.push_back("../data-set/highschool2012.txt");
 	filenames.push_back("../data-set/highschool2013.txt");

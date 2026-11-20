@@ -4,6 +4,8 @@
 #include <deque> 
 #include <set>
 #include <queue>
+#include <limits>
+#include <cstdlib>
 
 using namespace std;
 // set thread num
@@ -17,7 +19,17 @@ struct  Computer
 	unordered_map<string, int>& id_to_seq = transformer.data_graph.identity_to_seq;
 	int data_nodes_size = transformer.data_graph.graph_data.size();
 	unordered_map<int, int>& tran_root_seqs = transformer.tran_root_seqs;
-	map<int, int>& time_to_orgin_time = transformer.data_graph.time_to_orgin_time;
+	// Local addition: checked addition of nonnegative path counts.
+	static int addPathCounts(int a, int b)
+	{
+		if (a > std::numeric_limits<int>::max() - b)
+		{
+			std::cerr << "Shortest path count exceeds int range\n";
+			std::exit(EXIT_FAILURE);
+		}
+		return a + b;
+	}
+
 	Computer(Transformer& t) :
 		transformer(t) {}
 	//compute shortest path and temporal betweenness with time instance graph
@@ -72,7 +84,7 @@ struct  Computer
 					if (tran_distance[u_] == -1 || tran_distance[u] + 1 == tran_distance[u_])
 					{
 						tran_distance[u_] = tran_distance[u] + 1;
-						tran_sigma[u_] += tmp_sigma[u];
+						tran_sigma[u_] = addPathCounts(tran_sigma[u_], tran_sigma[u]);
 						tmp_sigma[u_] += tmp_sigma[u];
 						if (distance[tran_nodes[u_].identity] == -1)
 						{
@@ -92,7 +104,8 @@ struct  Computer
 				if (tran_distance[s.first] == distance[tran_nodes[s.first].identity])
 				{
 
-					total_sigma[tran_nodes[s.first].identity] += s.second;
+					int& count = total_sigma[tran_nodes[s.first].identity];
+					count = addPathCounts(count, s.second);
 				}
 			}
 			while (!stk.empty())
@@ -514,7 +527,7 @@ struct  Computer
 //			while (!dq.empty())
 //			{
 //				pair<int, int> u = dq.front();
-//				if (last == u.first)//·ÀÖ¹×Ô»·
+//				if (last == u.first)// Prevent self-loops
 //				{
 //					dq.pop_front();
 //					continue;
